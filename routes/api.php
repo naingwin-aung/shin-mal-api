@@ -17,3 +17,4 @@ Route::get('/categories/{categoryId}/menus', [MenuController::class, 'listing'])
 
 Route::get('/carts-tokens', [CartController::class, 'cartTokenListing']);
 Route::post('/carts', [CartController::class, 'storeAndUpdate']);
+Route::get('/carts/{id}', [CartController::class, 'detail']);

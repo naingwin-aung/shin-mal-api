@@ -15,4 +15,9 @@ class Cart extends Model
     {
         return $this->belongsTo(Token::class, 'token_id', 'id');
     }
+
+    public function cartMenus()
+    {
+        return $this->hasMany(CartMenu::class);
+    }
 }

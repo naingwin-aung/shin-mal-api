@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Cart;
 use App\Models\Token;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -22,7 +23,11 @@ class TokenController extends Controller
 
         $query = Token::query();
 
-        $result = $query->orderBy('id', 'asc')
+        $tokenInCart = Cart::pluck('token_id');
+
+        $result = $query
+            ->whereNotIn('id', $tokenInCart)
+            ->orderBy('id', 'asc')
             ->paginate($request->limit);
 
         return response()->json([
