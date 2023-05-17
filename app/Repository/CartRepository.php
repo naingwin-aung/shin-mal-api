@@ -59,10 +59,10 @@ class CartRepository
                 $newCartMenu = new CartMenu();
                 $newCartMenu->cart_id = $cart->id;
                 $newCartMenu->menu_id = $this->request->menu_id;
-                $newCartMenu->quantity = 1;
+                $newCartMenu->quantity = $this->request->quantity;
                 $newCartMenu->save();
             } else {
-                $cartMenu->quantity += 1;
+                $cartMenu->quantity += $this->request->quantity;
                 $cartMenu->update();
             }
 
@@ -75,6 +75,37 @@ class CartRepository
             DB::rollback();
             throw $e;
         }
+    }
+
+    /**
+     * quantity update
+     *
+     * @param [type] $id
+     * @return void
+     */
+    public function quantityUpdate($id)
+    {
+        $cart = Cart::find($id);
+
+        if(!$cart) {
+            throw new Exception('Not Found', 404);
+        }
+
+        $cartMenu = CartMenu::where('menu_id', $this->request->menu_id)
+        ->where('cart_id', $cart->id)
+        ->first();
+
+        if(!$cartMenu) {
+            throw new Exception('Not Found', 404);
+        }
+
+        $cartMenu->quantity = $this->request->quantity;
+        $cartMenu->update();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Successfully update cart'
+        ]);
     }
 
     /**
@@ -100,6 +131,7 @@ class CartRepository
             $this->totalPrice = $total;
             $this->cartTotalPrice += $total;
             $this->menuList[] = [
+                'id' => $menu->menu->id,
                 'name' => $menu->menu->name,
                 'price' => $menu->menu->price,
                 'quantity' => $menu->quantity,

@@ -40,10 +40,22 @@ class CartController extends Controller
         $request->validate([
             'token_id' => 'required',
             'menu_id' => 'required',
+            'quantity' => 'required',
         ]);
 
         $cartRepo = new CartRepository($request);
         return $cartRepo->cartStoreAndUpdate();
+    }
+
+    public function updateQuantity($id, Request $request)
+    {
+        $request->validate([
+            'menu_id' => 'required',
+            'quantity' => 'required',
+        ]);
+
+        $cartRepo = new CartRepository($request);
+        return $cartRepo->quantityUpdate($id);
     }
 
     /**
